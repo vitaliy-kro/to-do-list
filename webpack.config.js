@@ -5,7 +5,7 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: path.resolve(__dirname, "./src/index.js"),
-  output: { path: path.resolve(__dirname, "build"), filename: "main.js" },
+  output: { path: path.resolve(__dirname, "./dist"), filename: "main.js" },
 
   mode: "development",
   devServer: {
@@ -25,7 +25,9 @@ module.exports = {
       filename: "index.html",
     }),
     new CleanWebpackPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin({
+      publicPath: "/to-do-list/",
+    }),
   ],
 
   module: {
