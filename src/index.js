@@ -1,4 +1,5 @@
 import Notiflix from 'notiflix';
+import DragonDrop from 'drag-on-drop';
 import './css/styles.css';
 import { createTask, createMarkup, deleteTask } from './markup/createMarkup';
 import {
@@ -13,8 +14,23 @@ const refs = {
   addButton: document.querySelector('.js-add-button'),
   body: document.querySelector('.js-body'),
 };
-
 itemsToMarkupCheck();
+const card = document.querySelector('.item');
+console.log(card);
+const dragon = new DragonDrop(refs.body, {
+  handle: false,
+  announcement: {
+    grabbed: el => `${el.firstElementChild.textContent} grabbed`,
+    dropped: el => `${el.firstElementChild.textContent} dropped`,
+    reorder: (el, items) => {
+      const pos = items.indexOf(el) + 1;
+      const text = el.querySelector('li').firstElementChild.textContent;
+      return `The schedule has changed, ${text} is now item ${pos} of ${items.length}`;
+    },
+    cancel: 'Reschedule cancelled.',
+  },
+});
+
 refs.form.addEventListener('submit', addCard);
 
 refs.body.addEventListener('click', taskStatusChange);
@@ -35,6 +51,7 @@ function addCard(e) {
   const markup = createMarkup([data]);
   addToDOM(refs.body, markup);
   addToLocaleStorage(data);
+
   refs.form.reset();
 }
 
