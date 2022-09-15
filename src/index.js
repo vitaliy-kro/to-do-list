@@ -1,13 +1,16 @@
 import Notiflix from 'notiflix';
 import DragonDrop from 'drag-on-drop';
+import { format } from 'date-fns';
 import './css/styles.css';
-import { createTask, createMarkup, deleteTask } from './markup/createMarkup';
+import { createTask, createMarkup, deleteTask } from './markup/markup';
 import {
   addToLocaleStorage,
   getTasksFromLocalStorage,
-  changeLocaleStorage,
+  deleteFromLocaleStorage,
+  changeLocalStorage,
 } from './services/localstorage';
 import addToDOM from './services/addToDOM';
+import { completedTime, convertMs } from './timer/timer';
 export const LOCALSTORAGE_KEY = 'To do cards';
 const refs = {
   form: document.querySelector('.js-form'),
@@ -15,21 +18,6 @@ const refs = {
   body: document.querySelector('.js-body'),
 };
 itemsToMarkupCheck();
-const card = document.querySelector('.item');
-console.log(card);
-const dragon = new DragonDrop(refs.body, {
-  handle: false,
-  announcement: {
-    grabbed: el => `${el.firstElementChild.textContent} grabbed`,
-    dropped: el => `${el.firstElementChild.textContent} dropped`,
-    reorder: (el, items) => {
-      const pos = items.indexOf(el) + 1;
-      const text = el.querySelector('li').firstElementChild.textContent;
-      return `The schedule has changed, ${text} is now item ${pos} of ${items.length}`;
-    },
-    cancel: 'Reschedule cancelled.',
-  },
-});
 
 refs.form.addEventListener('submit', addCard);
 
@@ -58,10 +46,23 @@ function addCard(e) {
 function taskStatusChange(e) {
   if (!e.target.type) return;
   const elementToChange = e.target.parentNode;
+  const elementId = Number(elementToChange.dataset.id);
   if (elementToChange.classList.contains('checked')) {
-    changeLocaleStorage(Number(elementToChange.dataset.id));
+    deleteFromLocaleStorage(elementId);
     return deleteTask(e.target);
   }
   elementToChange.classList.add('checked');
+  changeLocalStorage(elementId);
+
+  const executionTime = completedTime(elementId);
+  const dateRef = elementToChange.firstElementChild;
+  const convertTime = convertMs(executionTime);
+  dateRef.textContent = `You did it for ${convertTime.hours}:${convertTime.minutes}:${convertTime.seconds}`;
+
+  e.target.classList.add('is-checked');
   e.target.textContent = 'x';
 }
+
+const dragon = new DragonDrop(refs.body, {
+  handle: false,
+});

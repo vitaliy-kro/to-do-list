@@ -3,11 +3,15 @@ body {
   padding: 0;
   /* background-color: rgba(124, 252, 0, 0.8); */
 }
-ol {
+ol,
+ul {
   list-style: none;
   padding: 0;
 }
-
+p {
+  margin: 0;
+  padding: 0;
+}
 .header {
   display: flex;
   align-items: center;
@@ -35,37 +39,45 @@ ol {
   min-width: 150px;
 }
 
-.item {
-  display: flex;
-  margin: 0 auto;
-  justify-content: space-between;
-  width: 80%;
-  background-color: #fff;
-  margin-bottom: 10px;
-}
-
 .text {
-  border: 1px solid red;
   flex-grow: 2;
   line-height: 3;
   margin: 0;
   padding: 0 15px;
   font-size: 20px;
 }
-
+.date {
+  margin: 0;
+  text-align: end;
+  padding-top: 5px;
+  padding-right: 5px;
+}
 .checked {
   opacity: 0.5;
 }
 
-.checked .text {
-  text-decoration: line-through;
-}
-
 .body {
-  padding-top: 30px;
+  display: grid;
+  max-width: 1400px;
+  grid-template-columns: repeat(auto-fill, 30%);
+  grid-auto-rows: 325px;
+  grid-gap: 12px;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  dding-top: 30px;
 }
 .item {
+  position: relative;
   cursor: grab;
+  border-radius: 3px;
+  position: relative;
+  -webkit-box-shadow: 0px 1px 3px 0px rgb(0 0 0 / 20%),
+    0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 2px 1px -1px rgb(0 0 0 / 12%);
+  box-shadow: 0px 1px 3px 0px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%),
+    0px 2px 1px -1px rgb(0 0 0 / 12%);
 }
 .gu-mirror {
   box-sizing: border-box;
@@ -95,4 +107,14 @@ ol {
   -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
   filter: alpha(opacity=20);
   list-style: none;
+}
+
+.done {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+
+.done.is-checked {
+  background-color: green;
 }

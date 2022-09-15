@@ -1,3 +1,3 @@
-export default function addToDOM(element, markup) {
-  element.insertAdjacentHTML('afterbegin', markup);
+export default function addToDOM(element, markup, position = 'afterbegin') {
+  element.insertAdjacentHTML(position, markup);
 }
