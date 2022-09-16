@@ -25,10 +25,10 @@ refs.body.addEventListener('click', taskStatusChange);
 
 function itemsToMarkupCheck() {
   const tasksInLocalStorage = getTasksFromLocalStorage();
-  console.log('tasksInLocalStorage', tasksInLocalStorage);
   if (!tasksInLocalStorage) return;
   const parsedTasks = JSON.parse(tasksInLocalStorage);
   console.log('parsedTasks', parsedTasks);
+
   addToDOM(refs.body, createMarkup(parsedTasks));
 }
 
