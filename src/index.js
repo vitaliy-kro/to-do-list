@@ -25,9 +25,11 @@ refs.body.addEventListener('click', taskStatusChange);
 
 function itemsToMarkupCheck() {
   const tasksInLocalStorage = getTasksFromLocalStorage();
+  console.log('tasksInLocalStorage', tasksInLocalStorage);
   if (!tasksInLocalStorage) return;
   const parsedTasks = JSON.parse(tasksInLocalStorage);
-  addToDOM(refs.body, createMarkup(JSON.parse(tasksInLocalStorage)));
+  console.log('parsedTasks', parsedTasks);
+  addToDOM(refs.body, createMarkup(parsedTasks));
 }
 
 function addCard(e) {
@@ -52,12 +54,9 @@ function taskStatusChange(e) {
     return deleteTask(e.target);
   }
   elementToChange.classList.add('checked');
-  changeLocalStorage(elementId);
 
-  const executionTime = completedTime(elementId);
   const dateRef = elementToChange.firstElementChild;
-  const convertTime = convertMs(executionTime);
-  dateRef.textContent = `You did it for ${convertTime.hours}:${convertTime.minutes}:${convertTime.seconds}`;
+  changeLocalStorage(elementId, doneTime(elementId, dateRef));
 
   e.target.classList.add('is-checked');
   e.target.textContent = 'x';
@@ -66,3 +65,11 @@ function taskStatusChange(e) {
 const dragon = new DragonDrop(refs.body, {
   handle: false,
 });
+
+function doneTime(id, changeEl) {
+  const executionTime = completedTime(id);
+  const convertTime = convertMs(executionTime);
+  const resultMessage = `You did it for ${convertTime.hours}:${convertTime.minutes}:${convertTime.seconds}`;
+  changeEl.textContent = resultMessage;
+  return resultMessage;
+}

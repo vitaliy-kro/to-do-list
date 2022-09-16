@@ -22,14 +22,20 @@ export function deleteFromLocaleStorage(id) {
   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(filtredTasks));
 }
 
-export function changeLocalStorage(id) {
+export function changeLocalStorage(taskId, finishTaskCallback) {
   const tasksInLocalStorage = getTasksFromLocalStorage();
   const parsedTasks = JSON.parse(tasksInLocalStorage);
-  const changeTask = parsedTasks.map(e => {
-    if (e.id === id) {
-      e.isChecked = true;
+  const changeTask = parsedTasks.map(
+    ({ id, isChecked, btnClass, btnText, value, date }) => {
+      if (taskId === id) {
+        isChecked = true;
+        btnClass = true;
+        btnText = true;
+        date = finishTaskCallback;
+      }
+      return { id, isChecked, btnClass, btnText, value, date };
     }
-    return e;
-  });
+  );
+  console.log('changeTask', changeTask);
   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(changeTask));
 }
