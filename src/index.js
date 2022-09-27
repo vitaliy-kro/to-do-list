@@ -4,11 +4,11 @@ import { format } from 'date-fns';
 import './css/styles.css';
 import { createTask, createMarkup, deleteTask } from './markup/markup';
 import {
-  addToLocaleStorage,
-  getTasksFromLocalStorage,
-  deleteFromLocaleStorage,
-  changeLocalStorage,
-} from './services/localstorage';
+  addToFirebaseStorage,
+  getTasksFromFirebaseStorage,
+  deleteFromFirebaseStorage,
+  changeFirebaseStorage,
+} from './services/firebaseStorage';
 import addToDOM from './services/addToDOM';
 import { completedTime, convertMs } from './timer/timer';
 export const LOCALSTORAGE_KEY = 'To do cards';
@@ -23,13 +23,11 @@ refs.form.addEventListener('submit', addCard);
 
 refs.body.addEventListener('click', taskStatusChange);
 
-function itemsToMarkupCheck() {
-  const tasksInLocalStorage = getTasksFromLocalStorage();
-  if (!tasksInLocalStorage) return;
-  const parsedTasks = JSON.parse(tasksInLocalStorage);
-  console.log('parsedTasks', parsedTasks);
-
-  addToDOM(refs.body, createMarkup(parsedTasks));
+async function itemsToMarkupCheck() {
+  const tasksInFirebaseStorage = await getTasksFromFirebaseStorage();
+  if (!tasksInFirebaseStorage) return;
+  console.log(123);
+  addToDOM(refs.body, createMarkup(tasksInFirebaseStorage));
 }
 
 function addCard(e) {
@@ -40,23 +38,26 @@ function addCard(e) {
   const data = createTask(trimmedValue);
   const markup = createMarkup([data]);
   addToDOM(refs.body, markup);
-  addToLocaleStorage(data);
+  addToFirebaseStorage(data);
 
   refs.form.reset();
 }
 
-function taskStatusChange(e) {
+async function taskStatusChange(e) {
   if (!e.target.type) return;
   const elementToChange = e.target.parentNode;
   const elementId = Number(elementToChange.dataset.id);
   if (elementToChange.classList.contains('checked')) {
-    deleteFromLocaleStorage(elementId);
+    deleteFromFirebaseStorage(elementId, elementToChange);
     return deleteTask(e.target);
   }
   elementToChange.classList.add('checked');
 
   const dateRef = elementToChange.firstElementChild;
-  changeLocalStorage(elementId, doneTime(elementId, dateRef));
+  const status = await changeFirebaseStorage(
+    elementId,
+    doneTime(elementId, dateRef)
+  );
 
   e.target.classList.add('is-checked');
   e.target.textContent = 'x';
