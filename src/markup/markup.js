@@ -2,18 +2,21 @@ import { format } from 'date-fns';
 
 export function createTask(
   value,
+  user = 0,
   status = false,
   btnText = false,
   btnClass = false,
-  date = false
+  date = false,
+  id = Date.now()
 ) {
   return {
     value,
-    id: Date.now(),
+    id,
     date,
     isChecked: status,
     btnText,
     btnClass,
+    user,
   };
 }
 export function createMarkup(tasks) {
@@ -50,4 +53,9 @@ export function deleteTask(task) {
 
 function booleanCheck(bool, trueValue, falseValue = '') {
   return bool ? trueValue : falseValue;
+}
+
+export function createUserInformation(userName, photoUrl) {
+  return `<img class="user-photo" src="${photoUrl}" alt="user-photo" width="20">
+  <p class="user-name">${userName}</p>`;
 }

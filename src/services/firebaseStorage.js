@@ -2,21 +2,20 @@ import { initializeApp } from 'firebase/app';
 import { LOCALSTORAGE_KEY } from '..';
 import firebaseConfig from '../firebase/firebase';
 import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
-
 const app = initializeApp(firebaseConfig);
 
 const db = getDatabase();
 
 export function addToFirebaseStorage(task) {
   try {
-    set(ref(db, 'tasks/' + task.id), task);
+    set(ref(db, `todo ${task.user}/${task.id}`), task);
   } catch (error) {
     console.log(error);
   }
 }
 
-export function getTasksFromFirebaseStorage(key = LOCALSTORAGE_KEY) {
-  return get(ref(db, 'tasks/'))
+export function getTasksFromFirebaseStorage(id) {
+  return get(ref(db, `todo ${id}/`))
     .then(snapshot => {
       if (snapshot.exists()) {
         return Object.values(snapshot.val());
@@ -45,45 +44,5 @@ export function changeFirebaseStorage(taskId, finishTaskCallback) {
       btnText: true,
       date: finishTaskCallback,
     });
-  } catch (error) {
-    console.log('error', error);
-  }
+  } catch (error) {}
 }
-
-// export function addToFirebaseStorage(value) {
-//   const inLocalStorageTasks = getTasksFromLocalStorage();
-//   const parsedTasks = inLocalStorageTasks
-//     ? JSON.parse(inLocalStorageTasks)
-//     : [];
-
-//   parsedTasks.push(value);
-
-//   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(parsedTasks));
-// }
-
-// export function getTasksFromLocalStorage(key = LOCALSTORAGE_KEY) {
-//   return localStorage.getItem(key);
-// }
-// export function changeLocalStorage(taskId, finishTaskCallback) {
-//   const tasksInLocalStorage = getTasksFromLocalStorage();
-//   const parsedTasks = JSON.parse(tasksInLocalStorage);
-//   const changeTask = parsedTasks.map(
-//     ({ id, isChecked, btnClass, btnText, value, date }) => {
-//       if (taskId === id) {
-//         isChecked = true;
-//         btnClass = true;
-//         btnText = true;
-//         date = finishTaskCallback;
-//       }
-//       return { id, isChecked, btnClass, btnText, value, date };
-//     }
-//   );
-
-//   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(changeTask));
-// }
-// export function deleteFromLocaleStorage(id) {
-//   const tasksInLocalStorage = getTasksFromLocalStorage();
-//   const parsedTasks = JSON.parse(tasksInLocalStorage);
-//   const filtredTasks = parsedTasks.filter(e => e.id !== id);
-//   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(filtredTasks));
-// }

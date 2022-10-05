@@ -18,7 +18,10 @@ module.exports = {
     hot: true,
     port: 7777,
   },
-
+  stats: {
+    errorDetails: true,
+    children: true,
+  },
   plugins: [
     new HTMLWebpackPlugin({
       template: path.resolve(__dirname, "./src/index.html"),

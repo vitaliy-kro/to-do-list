@@ -1,6 +1,6 @@
 import Notiflix from 'notiflix';
 import DragonDrop from 'drag-on-drop';
-import { format } from 'date-fns';
+
 import './css/styles.css';
 import { createTask, createMarkup, deleteTask } from './markup/markup';
 import {
@@ -9,34 +9,51 @@ import {
   deleteFromFirebaseStorage,
   changeFirebaseStorage,
 } from './services/firebaseStorage';
+import {
+  addToLocalStorage,
+  getTasksFromLocalStorage,
+  changeLocalStorage,
+  deleteFromLocaleStorage,
+  addInfoToLocalStorage,
+} from './services/localstorage';
 import addToDOM from './services/addToDOM';
 import { completedTime, convertMs } from './timer/timer';
+import { signIn, signOff } from './services/authentication';
+import { itemsToMarkup } from './services/itemsToMarkup';
+import { USER } from './services/authentication';
+
 export const LOCALSTORAGE_KEY = 'To do cards';
-const refs = {
+export const refs = {
   form: document.querySelector('.js-form'),
   addButton: document.querySelector('.js-add-button'),
   body: document.querySelector('.js-body'),
+  signInButton: document.querySelector('.sign-button-in'),
+  userInformation: document.querySelector('.user-information'),
 };
-itemsToMarkupCheck();
 
 refs.form.addEventListener('submit', addCard);
 
 refs.body.addEventListener('click', taskStatusChange);
 
-async function itemsToMarkupCheck() {
-  const tasksInFirebaseStorage = await getTasksFromFirebaseStorage();
-  if (!tasksInFirebaseStorage) return;
-  console.log(123);
-  addToDOM(refs.body, createMarkup(tasksInFirebaseStorage));
-}
+refs.signInButton.addEventListener('click', e => {
+  e.target.classList.contains('sign-button-in') ? signIn() : signOff();
+});
 
 function addCard(e) {
   e.preventDefault();
   const trimmedValue = refs.form.elements.message.value.trim();
-
   if (!trimmedValue) return Notiflix.Notify.warning('Type something!');
-  const data = createTask(trimmedValue);
+  console.log(USER.id);
+
+  const data = createTask(trimmedValue, USER.Id);
+  console.log('data', data);
   const markup = createMarkup([data]);
+  if (!USER.isLogIn) {
+    addToDOM(refs.body, markup);
+    addToLocalStorage(data);
+    refs.form.reset();
+    return;
+  }
   addToDOM(refs.body, markup);
   addToFirebaseStorage(data);
 
@@ -48,19 +65,24 @@ async function taskStatusChange(e) {
   const elementToChange = e.target.parentNode;
   const elementId = Number(elementToChange.dataset.id);
   if (elementToChange.classList.contains('checked')) {
-    deleteFromFirebaseStorage(elementId, elementToChange);
+    USER.isLogIn
+      ? deleteFromFirebaseStorage(elementId, elementToChange)
+      : deleteFromLocaleStorage(elementId);
     return deleteTask(e.target);
   }
   elementToChange.classList.add('checked');
 
   const dateRef = elementToChange.firstElementChild;
+  e.target.classList.add('is-checked');
+  e.target.textContent = 'x';
+  if (!USER.IsLogIn) {
+    changeLocalStorage(elementId, doneTime(elementId, dateRef));
+    return;
+  }
   const status = await changeFirebaseStorage(
     elementId,
     doneTime(elementId, dateRef)
   );
-
-  e.target.classList.add('is-checked');
-  e.target.textContent = 'x';
 }
 
 const dragon = new DragonDrop(refs.body, {
