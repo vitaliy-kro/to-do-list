@@ -5,7 +5,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from 'firebase/auth';
-import { refs } from '..';
+import { refs } from '../refs/refs';
 import { UserInfo } from './userInformation';
 import { createUserInformation } from '../markup/markup';
 import addToDOM from './addToDOM';
@@ -55,7 +55,7 @@ export function signOff() {
 
       refs.signInButton.textContent = 'Log in';
       refs.signInButton.classList.replace('sign-button-out', 'sign-button-in');
-      refs.userInformation.innerHTML = '';
+      refs.userInformation.firstElementChild.remove();
     })
     .catch(error => {
       console.log(error);
@@ -70,9 +70,6 @@ function signContainerChange(user) {
     USER.userImg = user.photoURL;
     refs.signInButton.textContent = 'Logout';
     refs.signInButton.classList.replace('sign-button-in', 'sign-button-out');
-    addToDOM(
-      refs.userInformation,
-      createUserInformation(USER.name, USER.userImg)
-    );
+    addToDOM(refs.userInformation, createUserInformation(USER.userImg));
   }
 }

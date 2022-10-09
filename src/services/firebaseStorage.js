@@ -1,5 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import { LOCALSTORAGE_KEY } from '..';
 import firebaseConfig from '../firebase/firebase';
 import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
 const app = initializeApp(firebaseConfig);

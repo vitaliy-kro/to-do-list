@@ -3,7 +3,7 @@ import { getTasksFromFirebaseStorage } from './firebaseStorage';
 import { USER } from './authentication';
 import addToDOM from './addToDOM';
 import { createMarkup } from '../markup/markup';
-import { refs } from '..';
+import { refs } from '../refs/refs';
 
 export async function itemsToMarkup(isLogIn = false) {
   refs.body.innerHTML = '';

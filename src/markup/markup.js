@@ -55,7 +55,6 @@ function booleanCheck(bool, trueValue, falseValue = '') {
   return bool ? trueValue : falseValue;
 }
 
-export function createUserInformation(userName, photoUrl) {
-  return `<img class="user-photo" src="${photoUrl}" alt="user-photo" width="20">
-  <p class="user-name">${userName}</p>`;
+export function createUserInformation(photoUrl) {
+  return `<img class="user-photo" src="${photoUrl}" alt="user-photo" width="20">`;
 }

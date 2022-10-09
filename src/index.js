@@ -21,15 +21,8 @@ import { completedTime, convertMs } from './timer/timer';
 import { signIn, signOff } from './services/authentication';
 import { itemsToMarkup } from './services/itemsToMarkup';
 import { USER } from './services/authentication';
-
+import { refs } from './refs/refs';
 export const LOCALSTORAGE_KEY = 'To do cards';
-export const refs = {
-  form: document.querySelector('.js-form'),
-  addButton: document.querySelector('.js-add-button'),
-  body: document.querySelector('.js-body'),
-  signInButton: document.querySelector('.sign-button-in'),
-  userInformation: document.querySelector('.user-information'),
-};
 
 refs.form.addEventListener('submit', addCard);
 
